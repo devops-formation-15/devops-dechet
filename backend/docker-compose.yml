@@ -41,27 +41,52 @@ services:
       retries: 5
 
   keycloak:
-    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:-25.0.5}
-    restart: always
-    env_file: ./.env
-    command: start-dev --import-realm
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./keycloak/realm-config-dev.json:/opt/keycloak/data/import/realm-config.json
-    depends_on:
-      postgres:
-        condition: service_healthy
+   image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:-25.0.5}
+   container_name: dechet-keycloak
+   restart: always
+   env_file: ./.env
+   environment:
+     # === ESSENTIAL FOR /auth CONTEXT + HTTPS TERMINATION ===
+     KC_HOSTNAME: dechet.46.lebondeveloppeur.net           # your real public domain
+     KC_HTTP_RELATIVE_PATH: /auth                          # Keycloak lives under /auth
+     KC_PROXY: edge                                        # Nginx terminates SSL
+     KC_HTTP_ENABLED: "true"                               # allow plain HTTP inside Docker
+     KC_HOSTNAME_STRICT_HTTPS: "false"                     # we are behind Nginx SSL
+     KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
 
+     # === DATABASE ===
+     KC_DB: postgres
+     KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB_NAME}
+     KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+     KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+
+     # === ADMIN ===
+     KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+     KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+     # === FEATURES ===
+     KC_FEATURES: token-exchange,preview
+   command: start-dev --import-realm
+   ports:
+     - "8080:8080"
+   volumes:
+     - ./keycloak/realm-config-dev.json:/opt/keycloak/data/import/realm-config.json
+   depends_on:
+     postgres:
+       condition: service_healthy
   backend:
-    image: nourzakhama2003/dechet-backend:${VERSION:-latest}
-    restart: always
-    env_file: ./.env
-    ports:
-      - "8082:8082"
-    depends_on:
-      - mongo
-      - keycloak
+   image: nourzakhama2003/dechet-backend:${VERSION:-latest}
+   restart: always
+   env_file: ./.env
+   environment:
+   # Force Spring Boot to see the real external URLs
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://dechet.46.lebondeveloppeur.net/auth/realms/dechetrealm
+    SPRING_WEB_CORS_ALLOWED_ORIGINS: https://dechet.46.lebondeveloppeur.net
+   ports:
+    - "8082:8082"
+   depends_on:
+    - mongo
+    - keycloak
 
 volumes:
   mongo_data:
