@@ -47,8 +47,7 @@ services:
    env_file: ./.env
    environment:
      # === ESSENTIAL FOR /auth CONTEXT + HTTPS TERMINATION ===
-     KC_HOSTNAME: dechet.46.lebondeveloppeur.net           # your real public domain
-     KC_HTTP_RELATIVE_PATH: /auth                          # Keycloak lives under /auth
+     KC_HOSTNAME: dechet.46.lebondeveloppeur.net           # your real public domain                         # Keycloak lives under /auth
      KC_PROXY: edge                                        # Nginx terminates SSL
      KC_HTTP_ENABLED: "true"                               # allow plain HTTP inside Docker
      KC_HOSTNAME_STRICT_HTTPS: "false"                     # we are behind Nginx SSL
