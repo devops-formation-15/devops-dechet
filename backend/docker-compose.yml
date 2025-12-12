@@ -69,7 +69,7 @@ services:
    ports:
      - "8080:8080"
    volumes:
-     - ./keycloak/realm-config-dev.json:/opt/keycloak/data/import/realm-config.json
+     - ./keycloak/realm-config-prod.json:/opt/keycloak/data/import/realm-config.json
    depends_on:
      postgres:
        condition: service_healthy
@@ -81,6 +81,7 @@ services:
    # Force Spring Boot to see the real external URLs
     SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://dechet.46.lebondeveloppeur.net/auth/realms/dechetrealm
     SPRING_WEB_CORS_ALLOWED_ORIGINS: https://dechet.46.lebondeveloppeur.net
+    SPRING_PROFILES_ACTIVE: production
    ports:
     - "8082:8082"
    depends_on:
