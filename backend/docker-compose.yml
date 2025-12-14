@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
-      - mongo_data:/data/db
+      - backend_mongo_data:/data/db
 
   mongo-express:
     image: mongo-express:latest
@@ -99,5 +99,5 @@ services:
         condition: service_started
 
 volumes:
-  mongo_data:
+  backend_mongo_data:
   postgres_data:
