@@ -4,7 +4,7 @@ services:
     container_name: dechet-mongo
     restart: always
     ports:
-      - 27017:27017
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -16,7 +16,7 @@ services:
     container_name: dechet-mongo-express
     restart: always
     ports:
-      - 8089:8081
+      - "8089:8081"
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/
       ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
@@ -48,45 +48,38 @@ services:
     image: quay.io/keycloak/keycloak:25.0.5
     container_name: dechet-keycloak
     restart: always
-
     env_file: ./.env
     environment:
-
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
 
-     KC_DB: postgres
-     KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB_NAME}
-     KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
-     KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB_NAME}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
 
-    # ✅ CORRECT PROXY CONFIG (Keycloak 25)
-     KC_PROXY_HEADERS: xforwarded
-     KC_HTTP_ENABLED: "true"
+      # ✅ Keycloak 25 – proxy
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
 
-    # ✅ CORRECT HOSTNAME CONFIG
-     KC_HOSTNAME_URL: https://dechet.46.lebondeveloppeur.net
-     KC_HOSTNAME_ADMIN_URL: https://dechet.46.lebondeveloppeur.net/admin
+      # ✅ Hostname (HTTPS)
+      KC_HOSTNAME_URL: https://dechet.46.lebondeveloppeur.net
+      KC_HOSTNAME_ADMIN_URL: https://dechet.46.lebondeveloppeur.net/admin
 
     command:
-    - start
-    - --features=hostname:v1
-    - --import-realm
-
+      - start
+      - --features=hostname:v1
+      - --import-realm
 
     ports:
-    - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8080:8080"
 
     volumes:
-    - ./keycloak/keycloak-import/realm-config-prod.json:/opt/keycloak/data/import/realm-config.json
+      - ./keycloak/keycloak-import/realm-config-prod.json:/opt/keycloak/data/import/realm-config.json
 
     depends_on:
-     postgres:
-      condition: service_healthy
-
-
-    # EXACT SAME TECHNIQUE AS YOUR HOTEL PROJECT → NO HEALTHCHECK AT ALL
-    # Keycloak starts in 15–25 seconds, backend waits with service_started
+      postgres:
+        condition: service_healthy
 
   backend:
     image: nourzakhama2003/dechet-backend:latest
@@ -103,7 +96,7 @@ services:
       mongo:
         condition: service_started
       keycloak:
-        condition: service_started    # ← SAME AS HOTEL PROJECT → NEVER FAILS
+        condition: service_started
 
 volumes:
   mongo_data:
