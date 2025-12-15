@@ -2,7 +2,7 @@
   "realm": "dechetrealm",
   "enabled": true,
   "displayName": "dechet Management Realm",
-  "sslRequired": "none",
+  "sslRequired": "external",
   "registrationAllowed": true,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
@@ -186,12 +186,13 @@
       "clientAuthenticatorType": "client-secret",
       "publicClient": true,
       "redirectUris": [
-        "https://dechet.46.lebondeveloppeur.net/*"
-
+        "https://dechet.46.lebondeveloppeur.net/*",
+        "https://dechet.46.lebondeveloppeur.net/silent-check-sso.html",
+        "http://localhost:4200/*"
       ],
       "webOrigins": [
-       " https://dechet.46.lebondeveloppeur.net",
-        "*"
+        "https://dechet.46.lebondeveloppeur.net",
+        "http://localhost:4200"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
