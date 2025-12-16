@@ -60,13 +60,16 @@ services:
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
 
-      # ✅ Keycloak 25 – proxy
-      KC_PROXY_HEADERS: xforwarded
-      KC_HTTP_ENABLED: "true"
-
-      # ✅ Hostname (HTTPS)
+      # Hostname configuration: public site and separate admin console host
+      KC_HOSTNAME: dechet.46.lebondeveloppeur.net
       KC_HOSTNAME_URL: https://dechet.46.lebondeveloppeur.net
-      KC_HOSTNAME_ADMIN_URL: https://dechet.46.lebondeveloppeur.net/admin
+      KC_HOSTNAME_ADMIN: admin.dechet.46.lebondeveloppeur.net
+      KC_HOSTNAME_ADMIN_URL: https://admin.dechet.46.lebondeveloppeur.net
+
+      # Proxy settings (SSL terminated at reverse proxy)
+      KC_PROXY: edge
+      KC_HOSTNAME_STRICT: "true"
+      KC_HTTP_ENABLED: "true"
 
     command:
       - start
@@ -82,6 +85,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:8080/realms || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
 
   backend:
     image: nourzakhama2003/dechet-backend:latest
