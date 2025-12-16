@@ -60,9 +60,9 @@ services:
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
 
-      # Hostname configuration: prefer using *_URL only (avoid setting both hostname and hostname-url)
-      KC_HOSTNAME_URL: https://dechet.46.lebondeveloppeur.net
-      KC_HOSTNAME_ADMIN_URL: https://admin.dechet.46.lebondeveloppeur.net
+      # Hostname configuration (v2): use full URLs
+      KC_HOSTNAME: https://dechet.46.lebondeveloppeur.net
+      KC_HOSTNAME_ADMIN: https://admin.dechet.46.lebondeveloppeur.net
 
       # Proxy settings (SSL terminated at reverse proxy)
       KC_PROXY_HEADERS: xforwarded
@@ -70,8 +70,7 @@ services:
 
     command:
       - start
-      - --features=hostname:v1
-      - --import-realm
+      - --import-realm  # Remove --features=hostname:v1
 
     ports:
       - "127.0.0.1:8080:8080"
@@ -88,7 +87,6 @@ services:
       timeout: 5s
       retries: 6
       start_period: 10s
-
   backend:
     image: nourzakhama2003/dechet-backend:latest
     container_name: dechet-backend
