@@ -22,7 +22,6 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
 
-
     depends_on:
       - mongo
 
@@ -70,7 +69,7 @@ services:
 
     command:
       - start
-      - --import-realm  # Remove --features=hostname:v1
+      - --import-realm # Remove --features=hostname:v1
 
     ports:
       - "127.0.0.1:8080:8080"
@@ -82,7 +81,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL","wget -qO- http://127.0.0.1:8080/realms || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/realms || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 6
