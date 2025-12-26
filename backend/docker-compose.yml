@@ -115,7 +115,6 @@ services:
       - PYTHONUNBUFFERED=1
     volumes:
       - chatbot-data:/app/faiss_index
-      - ./chatbot/guide.csv:/app/guide.csv
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
       interval: 30s
