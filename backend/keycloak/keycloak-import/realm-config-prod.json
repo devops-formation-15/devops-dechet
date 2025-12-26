@@ -100,16 +100,16 @@
   "adminEventsDetailsEnabled": true,
   "users": [
     {
-      "username": "testuser",
+      "username": "nour",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Test",
+      "firstName": "nour",
       "lastName": "User",
-      "email": "test@dechet.com",
+      "email": "nourzakhama2003@gmail.com",
       "credentials": [
         {
           "type": "password",
-          "value": "test123",
+          "value": "nour123",
           "temporary": false
         }
       ],
@@ -240,9 +240,9 @@
         "web-origins"
       ]
     }
-   
+
   ]
-  , 
+  ,
   "identityProviders": [
     {
       "alias": "google",

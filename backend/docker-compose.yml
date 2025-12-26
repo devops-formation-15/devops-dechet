@@ -102,7 +102,28 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
+  chatbot:
+    image: nourzakhama2003/waste-chatbot:${VERSION:-latest}
+    container_name: waste-chatbot
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - GUIDE_CSV_PATH=guide.csv
+      - LLM_MODEL_ID=TinyLlama/TinyLlama-1.1B-Chat-v1.0
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - chatbot-data:/app/faiss_index
+      - ./chatbot/guide.csv:/app/guide.csv
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   backend_mongo_data:
   postgres_data:
+  chatbot-data:
